@@ -3,10 +3,10 @@ import { getServerSession } from 'next-auth';
 
 import { db } from '@/lib/db';
 import { authOptions } from '@/lib/auth';
-import { fetchRedis } from '@/helper/redis';
-import { Message, messageValidator } from '@/lib/validation/message';
-import { pusherServer } from '@/lib/pusher';
 import { toPusherKey } from '@/lib/utils';
+import { fetchRedis } from '@/helper/redis';
+import { pusherServer } from '@/lib/pusher';
+import { Message, messageValidator } from '@/lib/validation/message';
 
 export async function POST(req: Request) {
   try {

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { User } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
+
 import { toPusherKey } from '@/lib/utils';
 import { pusherClient } from '@/lib/pusher';
 
@@ -24,8 +25,16 @@ const FriendRequestsSidebarOption: FC<FriendRequestsSidebarOptionProps> = ({
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
 
+    const friendsSubscription = pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:friends`)
+    );
+
     const friendRequestHandler = () => {
       setUnseenRequestCount((prev) => prev + 1);
+    };
+
+    const newFriendHandler = () => {
+      setUnseenRequestCount((prev) => prev - 1);
     };
 
     const bind = pusherClient.bind(
@@ -33,9 +42,14 @@ const FriendRequestsSidebarOption: FC<FriendRequestsSidebarOptionProps> = ({
       friendRequestHandler
     );
 
+    const friendsBind = pusherClient.bind('new_friend', newFriendHandler);
+
     return () => {
       subscription.unsubscribe();
       bind.unbind();
+
+      friendsSubscription.unsubscribe();
+      friendsBind.unbind();
     };
   }, [sessionId]);
 

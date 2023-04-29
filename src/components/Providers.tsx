@@ -1,7 +1,7 @@
 'use client';
 
-import { Toaster } from 'react-hot-toast';
 import { FC, ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 interface ProvidersProps {
   children: ReactNode;

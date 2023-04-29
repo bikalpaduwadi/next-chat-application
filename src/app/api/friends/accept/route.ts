@@ -1,10 +1,11 @@
-import { fetchRedis } from '@/helper/redis';
-import { authOptions } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { pusherServer } from '@/lib/pusher';
-import { toPusherKey } from '@/lib/utils';
+import { promise, z } from 'zod';
 import { getServerSession } from 'next-auth';
-import { z } from 'zod';
+
+import { db } from '@/lib/db';
+import { authOptions } from '@/lib/auth';
+import { toPusherKey } from '@/lib/utils';
+import { fetchRedis } from '@/helper/redis';
+import { pusherServer } from '@/lib/pusher';
 
 export async function POST(req: Request) {
   try {
@@ -41,18 +42,34 @@ export async function POST(req: Request) {
       });
     }
 
-    // Notify both users
+    const [userResponse, friendResponse] = (await Promise.all([
+      fetchRedis('get', `user:${session.user.id}`),
+      fetchRedis('get', `user:${userId}`),
+    ])) as [string, string];
 
-    pusherServer.trigger(
-      toPusherKey(`user:${userId}:friends`),
-      'new_friend',
-      {}
-    );
+    const userData = JSON.parse(userResponse) as User;
+    const friendData = JSON.parse(friendResponse) as User;
 
-    await db.sadd(`user:${session.user.id}:friends`, userId);
-    await db.sadd(`user:${userId}:friends`, session.user.id);
+    // Save and Notify both users
 
-    await db.srem(`user:${session.user.id}:incoming_friend_requests`, userId);
+    await Promise.all([
+      pusherServer.trigger(
+        toPusherKey(`user:${userId}:friends`),
+        'new_friend',
+        userData
+      ),
+      pusherServer.trigger(
+        toPusherKey(`user:${session.user.id}:friends`),
+        'new_friend',
+        friendData
+      ),
+
+      db.sadd(`user:${session.user.id}:friends`, userId),
+      db.sadd(`user:${userId}:friends`, session.user.id),
+
+      db.srem(`user:${session.user.id}:incoming_friend_requests`, userId),
+    ]);
+
     // await db.srem(`user:${userId}:outbound_friend_request`, session.user.id);
 
     return new Response('OK');

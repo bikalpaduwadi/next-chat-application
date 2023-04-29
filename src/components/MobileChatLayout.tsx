@@ -4,8 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Session } from 'next-auth';
 import { Menu, X } from 'lucide-react';
-import { FC, Fragment, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
+import { FC, Fragment, useEffect, useState } from 'react';
 
 import { Icons } from './Icons';
 import SignOutButton from './SignOutButton';
@@ -13,7 +14,6 @@ import { SidebarOption } from '@/types/sidebar';
 import SidebarChatList from './SidebarChatList';
 import Button, { buttonVariants } from './ui/Button';
 import FriendRequestsSidebarOption from './FriendReuestsSidebarOption';
-import { usePathname } from 'next/navigation';
 
 interface MobileChatLayoutProps {
   friends: User[];

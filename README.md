@@ -31,3 +31,13 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Browse the hosted application
+
+Open [https://next-chat-application-rh0vemle1-bikalpaduwadi.vercel.app/dashboard](https://next-chat-application-rh0vemle1-bikalpaduwadi.vercel.app/dashboard)
+
+- Sign Up using your google account
+
+- Navigate to add friend and add other users who have signed up with this application
+
+- Now you can send message to your friends

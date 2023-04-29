@@ -1,14 +1,14 @@
 import React from 'react';
-
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { notFound } from 'next/navigation';
-import { getFriendsByUserId } from '@/helper/friends';
-import { fetchRedis } from '@/helper/redis';
-import { chatHrefConstructor } from '@/lib/utils';
-import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { ChevronRight } from 'lucide-react';
+import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/lib/auth';
+import { fetchRedis } from '@/helper/redis';
+import { chatHrefConstructor } from '@/lib/utils';
+import { getFriendsByUserId } from '@/helper/friends';
 
 export default async function page() {
   const session = await getServerSession(authOptions);
@@ -77,7 +77,7 @@ export default async function page() {
                   <p className='mt-1 max-w-md'>
                     <span className='text-zinc-400'>
                       {friend.lastMessage.senderId === session.user.id
-                        ? 'You'
+                        ? 'You '
                         : ''}
                     </span>
                     {friend.lastMessage.text}

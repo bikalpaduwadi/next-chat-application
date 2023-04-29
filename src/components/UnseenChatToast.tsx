@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { chatHrefConstructor, cn } from '@/lib/utils';
-import toast, { Toast } from 'react-hot-toast';
 import Image from 'next/image';
+import toast, { Toast } from 'react-hot-toast';
+
+import { chatHrefConstructor, cn } from '@/lib/utils';
 
 interface UnseenChatToastProps {
   t: Toast;

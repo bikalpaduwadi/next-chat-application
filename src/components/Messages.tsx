@@ -4,9 +4,9 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { FC, useEffect, useRef, useState } from 'react';
 
+import { pusherClient } from '@/lib/pusher';
 import { cn, toPusherKey } from '@/lib/utils';
 import { Message } from '@/lib/validation/message';
-import { pusherClient } from '@/lib/pusher';
 
 interface MessagesProps {
   chatId: string;

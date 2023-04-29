@@ -1,11 +1,11 @@
 'use client';
 
 import { FC, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { signIn } from 'next-auth/react';
 import { FcGoogle } from 'react-icons/fc/';
 
 import Button from '@/components/ui/Button';
-import { toast } from 'react-hot-toast';
 
 interface LoginProps {}
 
