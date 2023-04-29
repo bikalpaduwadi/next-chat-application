@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 
 import { db } from '@/lib/db';
 import { authOptions } from '@/lib/auth';
+import { toPusherKey } from '@/lib/utils';
+import { pusherServer } from '@/lib/pusher';
 import { fetchRedis } from '@/helper/redis';
 import { addFriendValidator } from '@/lib/validation/add-friend';
 
@@ -58,6 +60,19 @@ export async function POST(req: Request) {
         status: 400,
       });
     }
+
+    console.log('Trigger pusher.....');
+
+    pusherServer.trigger(
+      toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
+      'incoming_friend_requests',
+      {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+      }
+    );
 
     db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
 

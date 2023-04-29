@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { Check, UserPlus, X } from 'lucide-react';
 
+import { toPusherKey } from '@/lib/utils';
+import { pusherClient } from '@/lib/pusher';
+
 interface FriendRequestsProps {
-  sessionid: string;
+  sessionId: string;
   incomingFriendRequests: IncomingFriendRequest[];
 }
 
 const FriendRequests: FC<FriendRequestsProps> = ({
-  sessionid,
+  sessionId,
   incomingFriendRequests,
 }) => {
   const [friendRequests, setFriendRequests] = useState<IncomingFriendRequest[]>(
@@ -21,6 +24,33 @@ const FriendRequests: FC<FriendRequestsProps> = ({
   const router = useRouter();
 
   useEffect(() => {
+    const subscription = pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+    );
+
+    const friendRequestHandler = ({ id, name, email, image }: any) => {
+      console.log('Inside request handler');
+      console.log('name', name);
+      console.log('email', email);
+      setFriendRequests((prev) => [
+        ...prev,
+        { id, name, email, image } as IncomingFriendRequest,
+      ]);
+    };
+
+    const bind = pusherClient.bind(
+      'incoming_friend_requests',
+      friendRequestHandler
+    );
+
+    return () => {
+      subscription.unsubscribe();
+      bind.unbind();
+    };
+  }, [sessionId]);
+
+  useEffect(() => {
+    console.log('tu idhar toh nai aaya na baba');
     setFriendRequests(incomingFriendRequests);
   }, [incomingFriendRequests]);
 
@@ -46,7 +76,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
 
   return (
     <>
-      {incomingFriendRequests.length ? (
+      {friendRequests.length ? (
         friendRequests.map((request) => {
           return (
             <div key={request.id} className='flex gap-4 items-center'>

@@ -38,7 +38,7 @@ const Page = async (props: PageProps) => {
       <h1 className='font-bold text-5xl mb-8'>Fried requests</h1>
       <div className='flex flex-col gap-4'>
         <FriendRequests
-          sessionid={session.user.id}
+          sessionId={session.user.id}
           incomingFriendRequests={requestSenders}
         />
       </div>
